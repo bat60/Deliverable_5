@@ -1,47 +1,66 @@
 import gov.nasa.jpf.vm.Verify;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Formatter;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Random;
 
 /**
  * Code by @author Wonsun Ahn
  * 
- * <p>BeanCounterLogic: The bean counter, also known as a quincunx or the Galton
+ * <p>
+ * BeanCounterLogic: The bean counter, also known as a quincunx or the Galton
  * box, is a device for statistics experiments named after English scientist Sir
  * Francis Galton. It consists of an upright board with evenly spaced nails (or
  * pegs) in a triangular form. Each bean takes a random path and falls into a
  * slot.
  *
- * <p>Beans are dropped from the opening of the board. Every time a bean hits a
+ * <p>
+ * Beans are dropped from the opening of the board. Every time a bean hits a
  * nail, it has a 50% chance of falling to the left or to the right. The piles
  * of beans are accumulated in the slots at the bottom of the board.
  * 
- * <p>This class implements the core logic of the machine. The MainPanel uses the
+ * <p>
+ * This class implements the core logic of the machine. The MainPanel uses the
  * state inside BeanCounterLogic to display on the screen.
  * 
- * <p>Note that BeanCounterLogic uses a logical coordinate system to store the
- * positions of in-flight beans.For example, for a 4-slot machine:
- *                      (0, 0)
- *               (0, 1)        (1, 1)
- *        (0, 2)        (1, 2)        (2, 2)
- *  (0, 3)       (1, 3)        (2, 3)       (3, 3)
- * [Slot0]       [Slot1]       [Slot2]      [Slot3]
+ * <p>
+ * Note that BeanCounterLogic uses a logical coordinate system to store the
+ * positions of in-flight beans.For example, for a 4-slot machine: (0, 0) (0, 1)
+ * (1, 1) (0, 2) (1, 2) (2, 2) (0, 3) (1, 3) (2, 3) (3, 3) [Slot0] [Slot1]
+ * [Slot2] [Slot3]
  */
 
 public class BeanCounterLogicImpl implements BeanCounterLogic {
 	// TODO: Add member methods and variables as needed
 
+	private BeanImpl[] in_flight_beans;
+	private Queue<BeanImpl> remaining_beans;
+	private Queue<BeanImpl>[] bean_slots;
+
 	/**
 	 * Constructor - creates the bean counter logic object that implements the core
 	 * logic with the provided number of slots.
 	 * 
-	 * @param slotCount the number of slots in the machine
+	 * @param slotCount
+	 *            the number of slots in the machine
 	 */
+	@SuppressWarnings("unchecked")
 	BeanCounterLogicImpl(int slotCount) {
 		// TODO: Implement
+		// inFlightBeans will never be greater than the slotCount
+		in_flight_beans = new BeanImpl[slotCount];
+		// number of Beans remaining that have not been inFlight or in a slot
+		// LL representation is faster for deletion bc no need for indexing/value
+		// deletion: O(1)
+		remaining_beans = new LinkedList<>();
+		// slots will hold list of beans from the queue
+		bean_slots = (Queue<BeanImpl>[]) new LinkedList[slotCount];
+		for (int i = 0; i < getSlotCount(); i++)
+			bean_slots[i] = new LinkedList<>();
 	}
 
 	/**
@@ -51,9 +70,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getSlotCount() {
 		// TODO: Implement
-		return 1;
+		return bean_slots.length;
 	}
-	
+
 	/**
 	 * Returns the number of beans remaining that are waiting to get inserted.
 	 * 
@@ -61,29 +80,36 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public int getRemainingBeanCount() {
 		// TODO: Implement
-		return 0;
+		return remaining_beans.size();
 	}
 
 	/**
 	 * Returns the x-coordinate for the in-flight bean at the provided y-coordinate.
 	 * 
-	 * @param yPos the y-coordinate in which to look for the in-flight bean
-	 * @return the x-coordinate of the in-flight bean; if no bean in y-coordinate, return NO_BEAN_IN_YPOS
+	 * @param yPos
+	 *            the y-coordinate in which to look for the in-flight bean
+	 * @return the x-coordinate of the in-flight bean; if no bean in y-coordinate,
+	 *         return NO_BEAN_IN_YPOS
 	 */
 	public int getInFlightBeanXPos(int yPos) {
 		// TODO: Implement
+		if (in_flight_beans[yPos] != null) {
+			return in_flight_beans[yPos].getDirection();
+		}
 		return NO_BEAN_IN_YPOS;
 	}
 
 	/**
 	 * Returns the number of beans in the ith slot.
 	 * 
-	 * @param i index of slot
+	 * @param i
+	 *            index of slot
 	 * @return number of beans in slot
 	 */
+	// slots will be an array
 	public int getSlotBeanCount(int i) {
 		// TODO: Implement
-		return 0;
+		return bean_slots[i].size();
 	}
 
 	/**
@@ -93,6 +119,19 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public double getAverageSlotBeanCount() {
 		// TODO: Implement
+		double sum_beans = 0;
+		int num_beans_in_slots = 0;
+
+		for (int slot = 0; slot < getSlotCount(); slot++) {
+			sum_beans += (slot * getSlotBeanCount(slot));
+			num_beans_in_slots += getSlotBeanCount(slot);
+		}
+
+		// if there are beans in slot, return the average
+		if (num_beans_in_slots > 0)
+			return num_beans_in_slots / sum_beans;
+
+		// if no beans in slot
 		return 0;
 	}
 
@@ -108,7 +147,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 
 	/**
 	 * Removes the upper half of all beans currently in slots, keeping only the
-	 * lower half.  If there are an odd number of beans, remove (N-1)/2 beans, where
+	 * lower half. If there are an odd number of beans, remove (N-1)/2 beans, where
 	 * N is the number of beans. So, if there are 3 beans, 1 will be removed and 2
 	 * will be remaining.
 	 */
@@ -125,10 +164,28 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 * BeanCounterLogicImpl objects and BeanBuggy objects are created with
 	 * BeanCounterLogicBuggy objects according to the Config class).
 	 * 
-	 * @param beans array of beans to add to the machine
+	 * @param beans
+	 *            array of beans to add to the machine
 	 */
 	public void reset(Bean[] beans) {
 		// TODO: Implement
+		this.remaining_beans.clear();
+		for (int i = 0; i < getSlotCount(); i++) {
+			in_flight_beans[i] = null;
+			bean_slots[i].clear();
+		}
+		if (beans == null)
+			return;
+		else {
+			for (int i = 0; i < beans.length; i++) {
+				remaining_beans.add((BeanImpl) beans[i]);
+			}
+			if (getRemainingBeanCount() > 0) {
+				in_flight_beans[0] = remaining_beans.poll();
+				in_flight_beans[0].setDirection(0);
+			}
+		}
+
 	}
 
 	/**
@@ -138,6 +195,19 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public void repeat() {
 		// TODO: Implement
+		for (int i = 0; i < getSlotCount(); i++) {
+			// scoop all beans in the slots
+			remaining_beans.addAll(bean_slots[i]);
+			// scoop up all in-flight beans in non-null objects
+			if (in_flight_beans[i] != null) {
+				remaining_beans.add(in_flight_beans[i]);
+			}
+			bean_slots[i].clear();
+		}
+		if (getRemainingBeanCount() > 0) {
+			in_flight_beans[0] = remaining_beans.poll();
+			in_flight_beans[0].setDirection(0);
+		}
 	}
 
 	/**
@@ -148,21 +218,55 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 * @return whether there has been any status change. If there is no change, that
 	 *         means the machine is finished.
 	 */
+
+	// These are used to store in-flight beans for a four slot machine.
+	// (0, 0)
+	// * (0, 1) (1, 1)
+	// * (0, 2) (1, 2) (2, 2)
+	// * (0, 3) (1, 3) (2, 3) (3, 3)
+	// * [Slot0] [Slot1] [Slot2] [Slot3]
+
+	// modifying working code
 	public boolean advanceStep() {
 		// TODO: Implement
-		return false;
+		boolean status_change = false;
+		// start at slot 3
+		// start backwards, 3, 2, 1, 0...
+		for (int i = getSlotCount() - 1; i >= 0; i--) {
+			if (i < getSlotCount() - 1) {
+				in_flight_beans[i + 1] = null;
+			}
+
+			if (in_flight_beans[i] != null) {
+				if (i == getSlotCount() - 1) {
+					bean_slots[in_flight_beans[i].getDirection()].add(in_flight_beans[i]);
+				} else {
+					in_flight_beans[i].whichDirection();
+					in_flight_beans[i + 1] = in_flight_beans[i];
+				}
+				status_change = true;
+			}
+		}
+		if (getRemainingBeanCount() > 0) {
+			in_flight_beans[0] = remaining_beans.poll();
+			in_flight_beans[0].setDirection(0);
+		} else
+			in_flight_beans[0] = remaining_beans.poll();
+
+		return status_change;
 	}
-	
+
 	/**
-	 * Number of spaces in between numbers when printing out the state of the machine.
-	 * Make sure the number is odd (even numbers don't work as well).
+	 * Number of spaces in between numbers when printing out the state of the
+	 * machine. Make sure the number is odd (even numbers don't work as well).
 	 */
 	private int xspacing = 3;
 
 	/**
 	 * Calculates the number of spaces to indent for the given row of pegs.
 	 * 
-	 * @param yPos the y-position (or row number) of the pegs
+	 * @param yPos
+	 *            the y-position (or row number) of the pegs
 	 * @return the number of spaces to indent
 	 */
 	private int getIndent(int yPos) {
@@ -221,12 +325,13 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		System.out.println("Example: java BeanCounterLogic 10 400 luck");
 		System.out.println("Example: java BeanCounterLogic 20 1000 skill debug");
 	}
-	
+
 	/**
 	 * Auxiliary main method. Runs the machine in text mode with no bells and
 	 * whistles. It simply shows the slot bean count at the end.
 	 * 
-	 * @param args commandline arguments; see showUsage() for detailed information
+	 * @param args
+	 *            commandline arguments; see showUsage() for detailed information
 	 */
 	public static void main(String[] args) {
 		boolean debug;
@@ -259,7 +364,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			showUsage();
 			return;
 		}
-		
+
 		if (args.length == 4 && args[3].equals("debug")) {
 			debug = true;
 		} else {

@@ -11,9 +11,9 @@ import java.util.Random;
  * SKILL_STDEV. The formula to calculate the skill level is:
  * 
  * <p>
- * SKILL_AVERAGE = (double) SLOT_COUNT * 0.5
- * SKILL_STDEV = (double) Math.sqrt(SLOT_COUNT * 0.5 * (1 - 0.5))
- * SKILL_LEVEL = (int) Math.round(rand.nextGaussian() * SKILL_STDEV + SKILL_AVERAGE)
+ * SKILL_AVERAGE = (double) SLOT_COUNT * 0.5 SKILL_STDEV = (double)
+ * Math.sqrt(SLOT_COUNT * 0.5 * (1 - 0.5)) SKILL_LEVEL = (int)
+ * Math.round(rand.nextGaussian() * SKILL_STDEV + SKILL_AVERAGE)
  * 
  * <p>
  * A skill level of 9 means it always makes the "right" choices (pun intended)
@@ -34,15 +34,53 @@ import java.util.Random;
 
 public class BeanImpl implements Bean {
 	// TODO: Add member methods and variables as needed
+	private boolean isLuck;
+	private Random rand;
+	private double SKILL_AVERAGE;
+	private double SKILL_STDEV;
+	private int SKILL_LEVEL;
+	private int direction;
 
 	/**
 	 * Constructor - creates a bean in either luck mode or skill mode.
 	 * 
-	 * @param slotCount the number of slots in the machine
-	 * @param isLuck whether the bean is in luck mode
-	 * @param rand   the random number generator
+	 * @param slotCount
+	 *            the number of slots in the machine
+	 * @param isLuck
+	 *            whether the bean is in luck mode
+	 * @param rand
+	 *            the random number generator
 	 */
 	BeanImpl(int slotCount, boolean isLuck, Random rand) {
 		// TODO: Implement
+		this.isLuck = isLuck;
+		this.rand = rand;
+		this.direction = 0;
+		SKILL_AVERAGE = (double) slotCount * 0.5;
+		SKILL_STDEV = (double) Math.sqrt(slotCount * 0.5 * (1 - 0.5));
+		SKILL_LEVEL = (int) Math.round(rand.nextGaussian() * SKILL_STDEV + SKILL_AVERAGE);
 	}
+
+	// getter, setter
+	public int getDirection() {
+		return this.direction;
+	}
+
+	public void setDirection(int dir) {
+		this.direction = dir;
+	}
+
+	// skill levels are irrelevant when the machine operates in luck mode
+	// formula for choosing direction:
+	// Go right if rand.nextInt(2) == 1; Go left if rand.nextInt(2) == 0
+	public void whichDirection() {
+		if (this.isLuck) {
+			if (rand.nextInt(2) == 1) {
+				direction++;
+			}
+		} else if (SKILL_LEVEL > 0) {
+			direction++;
+		}
+	}
+
 }
