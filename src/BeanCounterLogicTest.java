@@ -39,7 +39,8 @@ public class BeanCounterLogicTest {
 		 * https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 		 */
 
-		slotCount = Verify.getInt(1, 5);
+//		slotCount = Verify.getInt(1, 5);
+		slotCount = Verify.getInt(10, 10);
 		beanCount = Verify.getInt(0, 3);
 		isLuck = Verify.getBoolean();
 
@@ -52,7 +53,8 @@ public class BeanCounterLogicTest {
 		}
 
 		// A failstring useful to pass to assertions to get a more descriptive error.
-		failString = "Failure in (slotCount=" + slotCount + ", beanCount=" + beanCount + ", isLucky=" + isLuck + "):";
+		failString = "Failure in (slotCount=" + slotCount + ", "
+				+ "beanCount=" + beanCount + ", isLucky=" + isLuck + "):";
 	}
 
 	@AfterClass
@@ -74,8 +76,9 @@ public class BeanCounterLogicTest {
 		int in_slot_beans = 0;
 		for (int i = 0; i < slotCount; i++) {
 			in_slot_beans += logic.getSlotBeanCount(i);
-			if (logic.getInFlightBeanXPos(i) >= 0)
+			if (logic.getInFlightBeanXPos(i) >= 0) {
 				in_flight_beans += 1;
+			}
 		}
 		if (beanCount > 0) {
 			assertEquals(failString, (beanCount - 1), logic.getRemainingBeanCount());
@@ -130,8 +133,9 @@ public class BeanCounterLogicTest {
 			int in_slot_beans = 0;
 			for (int i = 0; i < slotCount; i++) {
 				in_slot_beans += logic.getSlotBeanCount(i);
-				if (logic.getInFlightBeanXPos(i) >= 0)
+				if (logic.getInFlightBeanXPos(i) >= 0) {
 					in_flight_beans += 1;
+				}
 			}
 			int remaining_beans = logic.getRemainingBeanCount();
 			assertEquals(failString, beanCount, (remaining_beans + in_flight_beans + in_slot_beans));
@@ -149,15 +153,17 @@ public class BeanCounterLogicTest {
 	public void testAdvanceStepPostCondition() {
 		// TODO: Implement
 		while (true) {
-			if (logic.advanceStep() == false)
-				break;
+			if (logic.advanceStep() == false) {
+				break; 
+			}
 		}
 		int in_flight_beans = 0;
 		int in_slot_beans = 0;
 		for (int i = 0; i < slotCount; i++) {
 			in_slot_beans += logic.getSlotBeanCount(i);
-			if (logic.getInFlightBeanXPos(i) >= 0)
+			if (logic.getInFlightBeanXPos(i) >= 0) {
 				in_flight_beans += 1;
+			}
 		}
 		int remaining_beans = logic.getRemainingBeanCount();
 		assertEquals(failString, 0, remaining_beans);
@@ -207,14 +213,16 @@ public class BeanCounterLogicTest {
 	public void testRepeat() {
 		// TODO: Implement
 		// if operating in skill mode:
-		if (isLuck)
+		if (isLuck) {
 			return;
+		}
 		logic.reset(beans);
 
 		int[] beansInSlot = new int[slotCount];
 		while (true) {
-			if (logic.advanceStep() == false)
+			if (logic.advanceStep() == false) {
 				break;
+			}
 		}
 		// first run
 		for (int i = 0; i < beansInSlot.length; i++) {
@@ -223,8 +231,9 @@ public class BeanCounterLogicTest {
 		// repeat
 		logic.repeat();
 		while (true) {
-			if (logic.advanceStep() == false)
+			if (logic.advanceStep() == false) {
 				break;
+			}
 		}
 		// second run
 		// bean count in each slot should be same

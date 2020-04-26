@@ -36,9 +36,9 @@ public class BeanImpl implements Bean {
 	// TODO: Add member methods and variables as needed
 	private boolean isLuck;
 	private Random rand;
-	private double SKILL_AVERAGE;
-	private double SKILL_STDEV;
-	private int SKILL_LEVEL;
+	private double skill_average;
+	private double skill_stdev;
+	private int skill_level;
 	private int direction;
 
 	/**
@@ -56,9 +56,9 @@ public class BeanImpl implements Bean {
 		this.isLuck = isLuck;
 		this.rand = rand;
 		this.direction = 0;
-		SKILL_AVERAGE = (double) slotCount * 0.5;
-		SKILL_STDEV = (double) Math.sqrt(slotCount * 0.5 * (1 - 0.5));
-		SKILL_LEVEL = (int) Math.round(rand.nextGaussian() * SKILL_STDEV + SKILL_AVERAGE);
+		skill_average = (double) slotCount * 0.5;
+		skill_stdev = (double) Math.sqrt(slotCount * 0.5 * (1 - 0.5));
+		skill_level = (int) Math.round(rand.nextGaussian() * skill_stdev + skill_average);
 	}
 
 	// getter, setter
@@ -70,16 +70,18 @@ public class BeanImpl implements Bean {
 		this.direction = dir;
 	}
 
-	// skill levels are irrelevant when the machine operates in luck mode
-	// formula for choosing direction:
-	// Go right if rand.nextInt(2) == 1; Go left if rand.nextInt(2) == 0
+	/**
+	 * Formula for choosing which direction to travel based on luck or not or skill_level
+	 * Go right if rand.nextInt(2) == 1
+	 * */
 	public void whichDirection() {
 		if (this.isLuck) {
 			if (rand.nextInt(2) == 1) {
 				direction++;
 			}
-		} else if (SKILL_LEVEL > 0) {
+		} else if (skill_level > 0) {
 			direction++;
+			skill_level--;
 		}
 	}
 

@@ -59,8 +59,10 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		remaining_beans = new LinkedList<>();
 		// slots will hold list of beans from the queue
 		bean_slots = (Queue<BeanImpl>[]) new LinkedList[slotCount];
-		for (int i = 0; i < getSlotCount(); i++)
+		for (int i = 0; i < getSlotCount(); i++) {
 			bean_slots[i] = new LinkedList<>();
+		}
+			
 	}
 
 	/**
@@ -128,9 +130,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		}
 
 		// if there are beans in slot, return the average
-		if (num_beans_in_slots > 0)
+		if (num_beans_in_slots > 0) {
 			return num_beans_in_slots / sum_beans;
-
+		}
 		// if no beans in slot
 		return 0;
 	}
@@ -174,9 +176,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			in_flight_beans[i] = null;
 			bean_slots[i].clear();
 		}
-		if (beans == null)
+		if (beans == null) {
 			return;
-		else {
+		} else {
 			for (int i = 0; i < beans.length; i++) {
 				remaining_beans.add((BeanImpl) beans[i]);
 			}
@@ -236,7 +238,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			if (i < getSlotCount() - 1) {
 				in_flight_beans[i + 1] = null;
 			}
-
 			if (in_flight_beans[i] != null) {
 				if (i == getSlotCount() - 1) {
 					bean_slots[in_flight_beans[i].getDirection()].add(in_flight_beans[i]);
@@ -250,8 +251,9 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		if (getRemainingBeanCount() > 0) {
 			in_flight_beans[0] = remaining_beans.poll();
 			in_flight_beans[0].setDirection(0);
-		} else
+		} else {
 			in_flight_beans[0] = remaining_beans.poll();
+		}
 
 		return status_change;
 	}
