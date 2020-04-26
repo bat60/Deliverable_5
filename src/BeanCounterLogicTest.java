@@ -39,8 +39,8 @@ public class BeanCounterLogicTest {
 		 * https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 		 */
 
-//		slotCount = Verify.getInt(1, 5);
-		slotCount = Verify.getInt(10, 10);
+		slotCount = Verify.getInt(1, 5);
+//		slotCount = Verify.getInt(10, 10);
 		beanCount = Verify.getInt(0, 3);
 		isLuck = Verify.getBoolean();
 
