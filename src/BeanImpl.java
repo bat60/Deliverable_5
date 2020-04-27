@@ -60,6 +60,9 @@ public class BeanImpl implements Bean {
 		skill_average = (double) slotCount * 0.5;
 		skill_stdev = (double) Math.sqrt(slotCount * 0.5 * (1 - 0.5));
 		skill_level = (int) Math.round(rand.nextGaussian() * skill_stdev + skill_average);
+//		skill_level = 3
+		//initialize 
+	    between_skill_levels = skill_level;
 	}
 
 	// setter, getter
@@ -89,8 +92,9 @@ public class BeanImpl implements Bean {
 				direction++;
 			}
 		} else if (between_skill_levels > 0) {
-			direction++;
 			between_skill_levels--;
+			direction++;
 		}		
 	}
+	
 }

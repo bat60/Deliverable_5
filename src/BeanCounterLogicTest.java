@@ -39,10 +39,12 @@ public class BeanCounterLogicTest {
 		 * https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 		 */
 
-		slotCount = Verify.getInt(1, 5);
+//		slotCount = Verify.getInt(1, 5);
+		slotCount = Verify.getIntFromList(10);
 //		slotCount = Verify.getInt(10, 10);
-		beanCount = Verify.getInt(0, 3);
-		isLuck = Verify.getBoolean();
+//		beanCount = Verify.getInt(0, 3);
+		beanCount = Verify.getIntFromList(2);
+		isLuck = Verify.getBoolean(false);
 
 		// Create the internal logic
 		logic = BeanCounterLogic.createInstance(slotCount);
@@ -262,7 +264,7 @@ public class BeanCounterLogicTest {
 	@Test
 	public void testRepeat() {
 		// TODO: Implement
-		// if operating in skill mode:
+		// if not operating in skill mode, exit
 		if (isLuck) {
 			return;
 		}
@@ -300,6 +302,7 @@ public class BeanCounterLogicTest {
 	 * logic.advanceStep() in a loop until it returns false
 	 * (the machine terminates). Call logic.getAverageSlotBeanCount(). Invariants: After 
 	 * calling logic.getAverageSlotBeanCount(), the total number of beans should equal
+	 * 
 	 */
 
 	@Test
