@@ -280,10 +280,12 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		if (getRemainingBeanCount() > 0) {
 			in_flight_beans[0] = remaining_beans.poll();
 			in_flight_beans[0].setDirection(0);
+			in_flight_beans[0].setSkill();
 		} else {
 			in_flight_beans[0] = remaining_beans.poll();
 		}
 		return status_change;
+		
 	}
 
 	/**

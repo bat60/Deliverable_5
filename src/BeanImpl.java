@@ -19,7 +19,7 @@ import java.util.Random;
  * A skill level of 9 means it always makes the "right" choices (pun intended)
  * when the machine is operating in skill mode ("skill" passed on command line).
  * That means the bean will always go right when a peg is encountered, resulting
- * it falling into slot 9. A skill evel of 0 means that the bean will always go
+ * it falling into slot 9. A skill level of 0 means that the bean will always go
  * left, resulting it falling into slot 0. For the in-between skill levels, the
  * bean will first go right then left. For example, for a skill level of 7, the
  * bean will go right 7 times then go left twice.
@@ -39,6 +39,7 @@ public class BeanImpl implements Bean {
 	private double skill_average;
 	private double skill_stdev;
 	private int skill_level;
+	private int between_skill_levels;
 	private int direction;
 
 	/**
@@ -61,28 +62,35 @@ public class BeanImpl implements Bean {
 		skill_level = (int) Math.round(rand.nextGaussian() * skill_stdev + skill_average);
 	}
 
-	// getter, setter
+	// setter, getter
+	public void setDirection(int dir) {
+		this.direction = dir;
+	}
+	
 	public int getDirection() {
 		return this.direction;
 	}
 
-	public void setDirection(int dir) {
-		this.direction = dir;
+	public void setSkill() {
+		between_skill_levels = skill_level;
 	}
-
+	
+	public int getSkill() {
+		return between_skill_levels;
+	}
+	
 	/**
 	 * Formula for choosing which direction to travel based on luck or not or skill_level
 	 * Go right if rand.nextInt(2) == 1
 	 * */
 	public void whichDirection() {
-		if (this.isLuck) {
+		if (isLuck) {
 			if (rand.nextInt(2) == 1) {
 				direction++;
 			}
-		} else if (skill_level > 0) {
+		} else if (between_skill_levels > 0) {
 			direction++;
-			skill_level--;
-		}
+			between_skill_levels--;
+		}		
 	}
-
 }
