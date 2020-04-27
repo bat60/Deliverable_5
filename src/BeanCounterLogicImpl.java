@@ -234,6 +234,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 				remaining_beans.add(in_flight_beans[i]);
 			}
 			bean_slots[i].clear();
+			in_flight_beans[i] = null;
 		}
 		if (getRemainingBeanCount() > 0) {
 			in_flight_beans[0] = remaining_beans.poll();
