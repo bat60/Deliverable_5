@@ -224,6 +224,12 @@ public class BeanCounterLogicTest {
 	@Test
 	public void testUpperHalf() {
 		// TODO: Implement
+		logic.reset(beans);
+		while (true) {
+			if (logic.advanceStep() == false) {
+				break; 
+			}
+		}
 		int totalBeans = 0; 
 		if (beanCount % 2 != 0 ) {
 			totalBeans = (beanCount / 2) + 1; 
@@ -295,7 +301,7 @@ public class BeanCounterLogicTest {
 
 	@Test
 	public void testGetAverageSlotBeanCount() {
-
+		
 	}
 
 }
