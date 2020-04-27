@@ -232,13 +232,16 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			// scoop up all in-flight beans in non-null objects
 			if (in_flight_beans[i] != null) {
 				remaining_beans.add(in_flight_beans[i]);
+				in_flight_beans[i] = null;
 			}
-			bean_slots[i].clear();
-			in_flight_beans[i] = null;
+			bean_slots[i].clear();	
 		}
 		if (getRemainingBeanCount() > 0) {
 			in_flight_beans[0] = remaining_beans.poll();
 			in_flight_beans[0].setDirection(0);
+		}
+		else {
+			in_flight_beans[0] = remaining_beans.poll();
 		}
 	}
 
