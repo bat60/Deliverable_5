@@ -123,7 +123,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		// TODO: Implement
 		double sum_beans = 0;
 		int num_beans_in_slots = 0;
-
+		
 		for (int slot = 0; slot < getSlotCount(); slot++) {
 			sum_beans += (slot * getSlotBeanCount(slot));
 			num_beans_in_slots += getSlotBeanCount(slot);
@@ -133,7 +133,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		if (num_beans_in_slots <= 0) {
 			return 0; 
 		} else {
-			return num_beans_in_slots / sum_beans; 
+			return sum_beans / num_beans_in_slots; 
 		}
 	}
 
