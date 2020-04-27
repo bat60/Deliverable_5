@@ -129,12 +129,12 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			num_beans_in_slots += getSlotBeanCount(slot);
 		}
 
-		// if there are beans in slot, return the average
-		if (num_beans_in_slots > 0) {
-			return num_beans_in_slots / sum_beans;
-		}
 		// if no beans in slot
-		return 0;
+		if (num_beans_in_slots <= 0) {
+			return 0; 
+		} else {
+			return num_beans_in_slots / sum_beans; 
+		}
 	}
 
 	/**
@@ -145,6 +145,22 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public void upperHalf() {
 		// TODO: Implement
+		//number of beans 
+		//sum of all N beans
+		int sum = 0; 
+		for (int i = 0; i < bean_slots.length; i++) {
+			sum += bean_slots[i].size();
+		}
+//		System.out.println(sum);
+		//start at slot 0 to remove lower half
+		int slotIterator = 0; 
+		//access half of the beans; handles odd beans as (/) returns floor  
+		for (int i = 0; i < sum / 2 ; i++) {
+			while (slotIterator < bean_slots.length && bean_slots[slotIterator].size() == 0) {
+				slotIterator++; //increment == 1, 2, 3... 
+			}
+			bean_slots[slotIterator].remove();
+		}
 	}
 
 	/**
@@ -155,6 +171,18 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public void lowerHalf() {
 		// TODO: Implement
+		int sum = 0; 
+		for (int i = 0; i < bean_slots.length; i++) {
+			sum += bean_slots[i].size();
+		}
+		//remove upper half, so start with slot_iterator at slotCount()-1
+		int slotIterator = getSlotCount() - 1; 
+		for (int i = 0; i < sum / 2; i++) {
+			 while (slotIterator >= 0 && bean_slots[slotIterator].size() == 0) {
+				 slotIterator--; //decrement == 4, 3, 2... 
+			 }
+			 bean_slots[slotIterator].remove();
+		}
 	}
 
 	/**
@@ -171,7 +199,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 */
 	public void reset(Bean[] beans) {
 		// TODO: Implement
-		this.remaining_beans.clear();
+		remaining_beans.clear();
 		for (int i = 0; i < getSlotCount(); i++) {
 			in_flight_beans[i] = null;
 			bean_slots[i].clear();
@@ -180,6 +208,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			return;
 		} else {
 			for (int i = 0; i < beans.length; i++) {
+				//downcast Bean to BeanImpl object
 				remaining_beans.add((BeanImpl) beans[i]);
 			}
 			if (getRemainingBeanCount() > 0) {
@@ -254,7 +283,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		} else {
 			in_flight_beans[0] = remaining_beans.poll();
 		}
-
 		return status_change;
 	}
 
