@@ -296,7 +296,10 @@ public class BeanCounterLogicTest {
 
 	/**
 	 * Test case for double getAverageSlotBeanCount(). Preconditions: None.
-	 * Execution steps: Call logic.reset(beans).
+	 * Execution steps: Call logic.reset(beans). Call 
+	 * logic.advanceStep() in a loop until it returns false
+	 * (the machine terminates). Call logic.getAverageSlotBeanCount(). Invariants: After 
+	 * calling logic.getAverageSlotBeanCount(), the total number of beans should equal
 	 */
 
 	@Test
