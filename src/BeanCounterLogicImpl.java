@@ -237,6 +237,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		}
 		if (getRemainingBeanCount() > 0) {
 			in_flight_beans[0] = remaining_beans.poll();
+			in_flight_beans[0].setSkill();
 			in_flight_beans[0].setDirection(0);
 		}
 	}
@@ -279,8 +280,8 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		}
 		if (getRemainingBeanCount() > 0) {
 			in_flight_beans[0] = remaining_beans.poll();
-			in_flight_beans[0].setDirection(0);
 			in_flight_beans[0].setSkill();
+			in_flight_beans[0].setDirection(0);			
 		} else {
 			in_flight_beans[0] = remaining_beans.poll();
 		}

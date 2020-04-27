@@ -92,8 +92,8 @@ public class BeanImpl implements Bean {
 				direction++;
 			}
 		} else if (between_skill_levels > 0) {
-			between_skill_levels--;
 			direction++;
+			between_skill_levels--;
 		}		
 	}
 	
