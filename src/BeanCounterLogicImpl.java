@@ -123,6 +123,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		// TODO: Implement
 		double sum_beans = 0;
 		int num_beans_in_slots = 0;
+		double average = 0; 
 		
 		for (int slot = 0; slot < getSlotCount(); slot++) {
 			sum_beans += (slot * getSlotBeanCount(slot));
@@ -130,10 +131,11 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		}
 		// if no beans in slot
 		if (num_beans_in_slots <= 0) {
-			return 0; 
+			average = 0; 
 		} else {
-			return sum_beans / num_beans_in_slots; 
+			average = sum_beans / num_beans_in_slots; 
 		}
+		return average; 
 	}
 
 	/**

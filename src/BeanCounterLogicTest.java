@@ -39,9 +39,12 @@ public class BeanCounterLogicTest {
 		 * https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 		 */
 
-		slotCount = Verify.getInt(1, 5);
-		beanCount = Verify.getInt(0, 3);
-		isLuck = Verify.getBoolean();
+//		slotCount = Verify.getInt(1, 5);
+		slotCount = Verify.getIntFromList(2);
+//		beanCount = Verify.getInt(0, 3);
+		beanCount = Verify.getIntFromList(1);;
+//		isLuck = Verify.getBoolean();
+		isLuck = Verify.getBoolean(true);
 
 		// Create the internal logic
 		logic = BeanCounterLogic.createInstance(slotCount);
@@ -118,11 +121,23 @@ public class BeanCounterLogicTest {
 		int i = 0;
 		while (logic.advanceStep() == true && i < slotCount) {
 			int xpos = logic.getInFlightBeanXPos(i);
-			assertTrue(failString, (xpos <= 1 || xpos >= 0));
+//			buggy failure in (slotCount=2, beanCount=1, isLucky=true)
+//			(x,y) test (xpos, y) 			
+			assertTrue(failString, (xpos < 0 || xpos >= 0));
 			i++;
 		}
 	}
-
+	
+	/**
+	 * Test case for boolean advanceStep().
+	 * Preconditions: None.
+	 * Execution steps: Call logic.reset(beans).
+	 *                  Call logic.advanceStep() in a loop until it returns 
+	 *                  false (the machine terminates).
+	 * Invariants: After each advanceStep(),
+	 *             the sum of remaining, in-flight, and in-slot beans is equal to beanCount.
+	 */
+	
 	@Test
 	public void testAdvanceStepBeanCount() {
 		// TODO: Implement
@@ -294,15 +309,31 @@ public class BeanCounterLogicTest {
 
 	/**
 	 * Test case for double getAverageSlotBeanCount(). Preconditions: None.
-	 * Execution steps: Call logic.reset(beans). Call 
-	 * logic.advanceStep() in a loop until it returns false
-	 * (the machine terminates). Call logic.getAverageSlotBeanCount(). Invariants: After 
-	 * calling logic.getAverageSlotBeanCount(), the total number of beans should equal
-	 * 
+	 * Execution steps: Call logic.reset(beans). Call logic.advanceStep() in a loop 
+	 * until it returns false (the machine terminates). Call logic.getAverageSlotCount()
+	 * Invariants: The total number of beans in slots times the average is equal to
+	 * the sum of beans in the machine. 
 	 */
-
+	// assert (number of beans in slots x average) = sum_beans 
+	
+	
 	@Test
 	public void testGetAverageSlotBeanCount() {
+		logic.reset(beans);
+		
+		double sum_beans = 0;
+		while (true) {
+			if (logic.advanceStep() == false) {
+				break;
+			}
+		}
+		// first run
+		for (int i = 0; i < slotCount; i++) {
+			sum_beans += (i * logic.getSlotBeanCount(i));
+		}
+		
+		double average = logic.getAverageSlotBeanCount(); 
+		assertEquals(failString, sum_beans, (average * beanCount), 0.0);
 		
 	}
 
