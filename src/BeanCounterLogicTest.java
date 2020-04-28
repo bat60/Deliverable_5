@@ -39,12 +39,12 @@ public class BeanCounterLogicTest {
 		 * https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 		 */
 
-//		slotCount = Verify.getInt(1, 5);
-		slotCount = Verify.getIntFromList(2);
-//		beanCount = Verify.getInt(0, 3);
-		beanCount = Verify.getIntFromList(1);;
-//		isLuck = Verify.getBoolean();
-		isLuck = Verify.getBoolean(true);
+		slotCount = Verify.getInt(1, 5);
+//		slotCount = Verify.getIntFromList(2);
+		beanCount = Verify.getInt(0, 3);
+//		beanCount = Verify.getIntFromList(1);;
+		isLuck = Verify.getBoolean();
+//		isLuck = Verify.getBoolean(true);
 
 		// Create the internal logic
 		logic = BeanCounterLogic.createInstance(slotCount);
@@ -121,9 +121,8 @@ public class BeanCounterLogicTest {
 		int i = 0;
 		while (logic.advanceStep() == true && i < slotCount) {
 			int xpos = logic.getInFlightBeanXPos(i);
-//			buggy failure in (slotCount=2, beanCount=1, isLucky=true)
-//			(x,y) test (xpos, y) 			
-			assertTrue(failString, (xpos < 0 || xpos >= 0));
+//			buggy failure in (slotCount=2, beanCount=1, isLucky=true)			
+			assertTrue(failString, (xpos == -1 || (xpos >= 0 && xpos <= i)));
 			i++;
 		}
 	}
