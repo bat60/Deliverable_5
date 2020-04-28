@@ -246,8 +246,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		}
 	}
 	
-
-
 	/**
 	 * Advances the machine one step. All the in-flight beans fall down one step to
 	 * the next peg. A new bean is inserted into the top of the machine if there are

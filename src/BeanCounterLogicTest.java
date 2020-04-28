@@ -118,12 +118,13 @@ public class BeanCounterLogicTest {
 	public void testAdvanceStepCoordinates() {
 		// TODO: Implement
 		logic.reset(beans);
-		int i = 0;
-		while (logic.advanceStep() == true && i < slotCount) {
-			int xpos = logic.getInFlightBeanXPos(i);
-//			buggy failure in (slotCount=2, beanCount=1, isLucky=true)			
-			assertTrue(failString, (xpos == -1 || (xpos >= 0 && xpos <= i)));
-			i++;
+		while (logic.advanceStep() == true) {
+			for (int slotIter = 0; slotIter < slotCount; slotIter++) {
+				int xpos = logic.getInFlightBeanXPos(slotIter);
+//				buggy failure in (slotCount=2, beanCount=1, isLucky=true)			
+				assertTrue(failString, ((xpos == -1 && xpos < slotIter) 
+						|| (xpos >= 0 && xpos <= slotIter)));
+			}
 		}
 	}
 	
