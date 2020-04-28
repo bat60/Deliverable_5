@@ -39,12 +39,9 @@ public class BeanCounterLogicTest {
 		 * https://github.com/javapathfinder/jpf-core/wiki/Verify-API-of-JPF
 		 */
 
-//		slotCount = Verify.getInt(1, 5);
-		slotCount = Verify.getIntFromList(10);
-//		slotCount = Verify.getInt(10, 10);
-//		beanCount = Verify.getInt(0, 3);
-		beanCount = Verify.getIntFromList(2);
-		isLuck = Verify.getBoolean(false);
+		slotCount = Verify.getInt(1, 5);
+		beanCount = Verify.getInt(0, 3);
+		isLuck = Verify.getBoolean();
 
 		// Create the internal logic
 		logic = BeanCounterLogic.createInstance(slotCount);
@@ -170,8 +167,7 @@ public class BeanCounterLogicTest {
 		int remaining_beans = logic.getRemainingBeanCount();
 		assertEquals(failString, 0, remaining_beans);
 		assertEquals(failString, 0, in_flight_beans);
-		assertEquals(failString, beanCount, in_slot_beans);
-
+		assertEquals(failString, beanCount, in_slot_beans);	
 	}
 
 	/**
@@ -185,7 +181,7 @@ public class BeanCounterLogicTest {
 	 */
 	@Test
 	public void testLowerHalf() {
-//		// TODO: Implement
+		// TODO: Implement
 		logic.reset(beans);
 		while (true) {
 			if (logic.advanceStep() == false) {
@@ -212,6 +208,7 @@ public class BeanCounterLogicTest {
 	    for (int i = 0; i < slotCount; i++) {
 		      assertEquals(failString, bean_slots[i], logic.getSlotBeanCount(i));
 	    }
+		
 	}
 
 	/**
@@ -293,7 +290,6 @@ public class BeanCounterLogicTest {
 		for (int i = 0; i < beansInSlot.length; i++) {
 			assertEquals(failString, beansInSlot[i], logic.getSlotBeanCount(i));
 		}
-
 	}
 
 	/**

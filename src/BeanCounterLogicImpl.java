@@ -51,7 +51,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	@SuppressWarnings("unchecked")
 	BeanCounterLogicImpl(int slotCount) {
 		// TODO: Implement
-		// inFlightBeans will never be greater than the slotCount
+		// in_flight_beans will never be greater than the slotCount
 		in_flight_beans = new BeanImpl[slotCount];
 		// number of Beans remaining that have not been inFlight or in a slot
 		// LL representation is faster for deletion bc no need for indexing/value
@@ -128,7 +128,6 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			sum_beans += (slot * getSlotBeanCount(slot));
 			num_beans_in_slots += getSlotBeanCount(slot);
 		}
-
 		// if no beans in slot
 		if (num_beans_in_slots <= 0) {
 			return 0; 
@@ -151,7 +150,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		for (int i = 0; i < bean_slots.length; i++) {
 			sum += bean_slots[i].size();
 		}
-//		System.out.println(sum);
+
 		//start at slot 0 to remove lower half
 		int slotIterator = 0; 
 		//access half of the beans; handles odd beans as (/) returns floor  
@@ -197,6 +196,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 	 * @param beans
 	 *            array of beans to add to the machine
 	 */
+		
 	public void reset(Bean[] beans) {
 		// TODO: Implement
 		remaining_beans.clear();
@@ -214,9 +214,10 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			if (getRemainingBeanCount() > 0) {
 				in_flight_beans[0] = remaining_beans.poll();
 				in_flight_beans[0].setDirection(0);
+				in_flight_beans[0].setSkill();
 			}
 		}
-
+		
 	}
 
 	/**
@@ -232,15 +233,18 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 			// scoop up all in-flight beans in non-null objects
 			if (in_flight_beans[i] != null) {
 				remaining_beans.add(in_flight_beans[i]);
+				in_flight_beans[i] = null;
 			}
 			bean_slots[i].clear();
 		}
 		if (getRemainingBeanCount() > 0) {
 			in_flight_beans[0] = remaining_beans.poll();
-			in_flight_beans[0].setSkill();
 			in_flight_beans[0].setDirection(0);
+			in_flight_beans[0].setSkill();
 		}
 	}
+	
+
 
 	/**
 	 * Advances the machine one step. All the in-flight beans fall down one step to
@@ -260,6 +264,7 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 
 	// modifying working code
 	public boolean advanceStep() {
+	
 		// TODO: Implement
 		boolean status_change = false;
 		// start at slot 3
@@ -281,12 +286,11 @@ public class BeanCounterLogicImpl implements BeanCounterLogic {
 		if (getRemainingBeanCount() > 0) {
 			in_flight_beans[0] = remaining_beans.poll();
 			in_flight_beans[0].setSkill();
-			in_flight_beans[0].setDirection(0);			
+			in_flight_beans[0].setDirection(0);
 		} else {
 			in_flight_beans[0] = remaining_beans.poll();
 		}
-		return status_change;
-		
+		return status_change;	
 	}
 
 	/**
